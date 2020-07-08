@@ -1,0 +1,21 @@
+{
+  "name": "ball-bits",
+  "version": "1.0.0",
+  "description": "Logic game",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "qunit"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "grunt": "^1.2.0",
+    "matter-js": "^0.14.2"
+  },
+  "devDependencies": {
+    "qunit": "^2.10.1"
+  }
+}
