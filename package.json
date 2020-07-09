@@ -13,7 +13,10 @@
   "license": "ISC",
   "dependencies": {
     "grunt": "^1.2.0",
-    "matter-js": "^0.14.2"
+    "matter-js": "^0.14.2",
+    "pathseg": "^1.2.0",
+    "pixi.js": "^5.3.0",
+    "poly-decomp": "^0.3.0"
   },
   "devDependencies": {
     "qunit": "^2.10.1"

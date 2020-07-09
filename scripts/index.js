@@ -343,7 +343,9 @@
         this.render = function(x, y) {
             this.x = x;
             this.y = y;
-            this.body = Bodies.circle(x, y, this.radius, {friction: 0});
+            var inner = Bodies.circle(x, y, this.radius, { friction: 0, density: 1, isText: true, text: this.value});
+            var outter = Bodies.circle(x, y, this.radius, { friction: 0, density: 1});
+            this.body = Matter.Body.create({parts: [inner, outter], density: 1});
 
             World.add(engine.world, this.body);
         }

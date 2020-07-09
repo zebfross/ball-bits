@@ -8977,7 +8977,10 @@ var Mouse = _dereq_('../core/Mouse');
                     c.globalAlpha = part.render.opacity;
                 }
 
-                if (part.render.sprite && part.render.sprite.texture && !options.wireframes) {
+                if (part.isText) {
+                    Render.textPart(render, part, context);
+                }
+                else if (part.render.sprite && part.render.sprite.texture && !options.wireframes) {
                     // part sprite
                     var sprite = part.render.sprite,
                         texture = _getTexture(render, sprite.texture);
@@ -9073,6 +9076,11 @@ var Mouse = _dereq_('../core/Mouse');
             for (k = body.parts.length > 1 ? 1 : 0; k < body.parts.length; k++) {
                 part = body.parts[k];
 
+                if (part.isText) {
+                    Render.textPart(render, part, context);
+                    continue;
+                }
+
                 c.moveTo(part.vertices[0].x, part.vertices[0].y);
 
                 for (j = 1; j < part.vertices.length; j++) {
@@ -9095,6 +9103,12 @@ var Mouse = _dereq_('../core/Mouse');
         c.strokeStyle = '#bbb';
         c.stroke();
     };
+
+    Render.textPart = function (render, part, c) {
+        c.font = "16px Arial";
+        c.fillStyle = 'rgba(255,255,255,0.5)';
+        c.fillText(part.text, part.position.x-5, part.position.y+5);
+    }
 
     /**
      * Optimised method for drawing body convex hull wireframes in one pass
