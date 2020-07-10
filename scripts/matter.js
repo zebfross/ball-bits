@@ -8978,7 +8978,7 @@ var Mouse = _dereq_('../core/Mouse');
                 }
 
                 if (part.isText) {
-                    Render.textPart(render, part, context);
+                    Render.textPart(render, part, context, body.angle);
                 }
                 else if (part.render.sprite && part.render.sprite.texture && !options.wireframes) {
                     // part sprite
@@ -9077,7 +9077,7 @@ var Mouse = _dereq_('../core/Mouse');
                 part = body.parts[k];
 
                 if (part.isText) {
-                    Render.textPart(render, part, context);
+                    Render.textPart(render, part, context, body.angle);
                     continue;
                 }
 
@@ -9104,10 +9104,15 @@ var Mouse = _dereq_('../core/Mouse');
         c.stroke();
     };
 
-    Render.textPart = function (render, part, c) {
+    Render.textPart = function (render, part, c, angle) {
+        c.save();
+        c.translate(part.position.x, part.position.y);
+        c.rotate(angle);
+        c.textAlign = "center";
         c.font = "16px Arial";
         c.fillStyle = 'rgba(255,255,255,0.5)';
-        c.fillText(part.text, part.position.x-5, part.position.y+5);
+        c.fillText(part.text, 0, 0);
+        c.restore();
     }
 
     /**
