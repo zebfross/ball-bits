@@ -8964,6 +8964,8 @@ var Mouse = _dereq_('../core/Mouse');
             if (!body.render.visible)
                 continue;
 
+            var textParts = [];
+
             // handle compound parts
             for (k = body.parts.length > 1 ? 1 : 0; k < body.parts.length; k++) {
                 part = body.parts[k];
@@ -8978,7 +8980,7 @@ var Mouse = _dereq_('../core/Mouse');
                 }
 
                 if (part.isText) {
-                    Render.textPart(render, part, context, body.angle);
+                    textParts.push(part);
                 }
                 else if (part.render.sprite && part.render.sprite.texture && !options.wireframes) {
                     // part sprite
@@ -9043,6 +9045,11 @@ var Mouse = _dereq_('../core/Mouse');
 
                 c.globalAlpha = 1;
             }
+
+            for (k in textParts) {
+                var part = textParts[k];
+                Render.textPart(render, part, context, body.angle);
+            }
         }
     };
 
@@ -9072,12 +9079,14 @@ var Mouse = _dereq_('../core/Mouse');
             if (!body.render.visible)
                 continue;
 
+            var textParts = [];
+
             // handle compound parts
             for (k = body.parts.length > 1 ? 1 : 0; k < body.parts.length; k++) {
                 part = body.parts[k];
 
                 if (part.isText) {
-                    Render.textPart(render, part, context, body.angle);
+                    textParts.push(part);
                     continue;
                 }
 
@@ -9097,6 +9106,11 @@ var Mouse = _dereq_('../core/Mouse');
 
                 c.lineTo(part.vertices[0].x, part.vertices[0].y);
             }
+
+            for(k in textParts) {
+                part = textParts[k];
+                Render.textPart(render, part, context, body.angle);
+            }
         }
 
         c.lineWidth = 1;
@@ -9110,7 +9124,7 @@ var Mouse = _dereq_('../core/Mouse');
         c.rotate(angle);
         c.textAlign = "center";
         c.font = "16px Arial";
-        c.fillStyle = 'rgba(255,255,255,0.5)';
+        c.fillStyle = 'rgba(255,255,255)';
         c.fillText(part.text, 0, 0);
         c.restore();
     }
