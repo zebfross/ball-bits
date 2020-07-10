@@ -61,15 +61,24 @@
         return 0;
     }
 
-    BB.Game = function(startGate) {
+    BB.Game = function(startGate, successFunc) {
         this.start = startGate;
+        this.successFunc = successFunc;
 
         this.advanceAllBalls = function(cb) {
             var self = this;
             var callback = function(error, finished) {
                 if (finished) {
+                    var success = successFunc(self.findBuckets());
+                    if(inBrowser) {
+                        if (success == true) {
+                            document$1.body.append("Success");
+                        } else {
+                            document$1.body.append("Failed: " + success);
+                        }
+                    }
                     if (cb)
-                        return cb(error);
+                        return cb(error, success);
                 } else {
                     self.advanceBalls(callback);
                 }
@@ -92,6 +101,23 @@
                 }
             }
             cb(null, true);
+        }
+
+        this.findBuckets = function () {
+            var nodesToVisit = [this.start];
+            var buckets = [];
+            while (nodesToVisit.length > 0) {
+                var node = nodesToVisit.shift();
+
+                if (node instanceof BB.BucketGate) {
+                    buckets.push(node);
+                }
+
+                if (node.next)
+                    nodesToVisit = nodesToVisit.concat(node.next);
+            }
+
+            return buckets;
         }
     }
 
@@ -225,6 +251,12 @@
             }
         }
 
+        this.remove = function () {
+            World.remove(engine.world, this.body);
+            if (this.gate)
+                World.remove(engine.world, this.gate);
+        }
+
         this.create();
     }
 
@@ -234,8 +266,8 @@
     BB.IfGate_Lt = function(a, b) { return a < b; }
     BB.IfGate_Mod = function(a, b) { return a % b == 0; }
 
-    BB.IfGate_BallFn = function(fn) { return function(a, b) { return fn(a.value, b);} }
-    BB.IfGate_BallBallFn = function(fn) { return function(a, b) { return fn(a.value, b.value); } }
+    var IfGate_BallFn = function(fn) { return function(a, b) { return fn(a.value, b);} }
+    var IfGate_BallBallFn = function(fn) { return function(a, b) { return fn(a.value, b.value); } }
 
     BB.IfGate = function(balls, x, y, next, compFn, compVal) {
         BB.Gate.call(this, balls, x, y, 1 /*defaultAdvanced*/, next);
@@ -254,7 +286,6 @@
         this.closeLeftGate = function () {
             this.leftGate = Bodies.rectangle(this.x + 50 / 4, this.y + 75, 5, 55, { angle: -1 * this.angle, isStatic: true });
             World.add(engine.world, this.leftGate);
-            this.body.push(this.leftGate);
         }
 
         this.openRightGate = function () {
@@ -265,7 +296,6 @@
         this.closeRightGate = function() {
             this.rightGate = Bodies.rectangle(this.x + 30 + 50 / 4, this.y + 75, 5, 55, { angle: this.angle, isStatic: true });
             World.add(engine.world, this.rightGate);
-            this.body.push(this.rightGate);
         }
 
         this.onBallsAdvanced = function (count, cb) {
@@ -282,7 +312,13 @@
         }
 
         this.onBallsAdvancing = function (count) {
-            if (this.compFn(this.balls[0], this.compVal)) {
+            var comp;
+            if (count == 1)
+                comp = IfGate_BallFn(this.compFn);
+            else if (count == 2)
+                comp = IfGate_BallBallFn(this.compFn);
+
+            if (comp(this.balls[0], (count > 1) ? this.balls[1] : this.compVal)) {
                 this.openLeftGate();
             } else {
                 this.openRightGate();
@@ -306,6 +342,14 @@
 
             this.closeLeftGate();
             this.closeRightGate();
+        }
+
+        this.remove = function() {
+            World.remove(engine.world, this.body);
+            if (this.leftGate)
+                World.remove(engine.world, this.leftGate);
+            if (this.rightGate)
+                World.remove(engine.world, this.rightGate);
         }
 
         this.create();

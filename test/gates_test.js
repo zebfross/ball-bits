@@ -35,7 +35,7 @@ QUnit.test("if gate releases balls into bucket", function (assert) {
     var bucket1 = new BB.BucketGate([], 0, 0);
     var bucket2 = new BB.BucketGate([], 0, 0);
 
-    var ifGate = new BB.IfGate([], 0, 0, [bucket1, bucket2], BB.IfGate_BallFn(BB.IfGate_Mod), 2);
+    var ifGate = new BB.IfGate([], 0, 0, [bucket1, bucket2], BB.IfGate_Mod, 2);
     var model = new BB.InputGate(balls, 0, 0, ifGate)
     var game = new BB.Game(model);
     assert.ok(game != undefined);
@@ -57,17 +57,19 @@ QUnit.test("Game advances all balls", function (assert) {
     var bucket1 = new BB.BucketGate([], 0, 0);
     var bucket2 = new BB.BucketGate([], 0, 0);
 
-    var ifGate = new BB.IfGate([], 0, 0, [bucket1, bucket2], BB.IfGate_BallFn(BB.IfGate_Mod), 2);
+    var ifGate = new BB.IfGate([], 0, 0, [bucket1, bucket2], BB.IfGate_Mod, 2);
     var model = new BB.InputGate(balls, 0, 0, ifGate)
-    var game = new BB.Game(model);
+    var game = new BB.Game(model, function() { return true; });
     assert.ok(game != undefined);
 
-    game.advanceAllBalls(function (error) {
+    game.advanceAllBalls(function (error, success) {
         assert.notOk(error);
         assert.equal(model.balls.length, 0);
         assert.equal(ifGate.balls.length, 0);
         assert.equal(bucket1.balls.length, 3);
         assert.equal(bucket2.balls.length, 3);
+
+        assert.equal(success, true, "Game should have finished successfully");
 
         done();
     });
