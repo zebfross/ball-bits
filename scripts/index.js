@@ -26,8 +26,10 @@
         var render = Render.create({
             element: document$1.querySelector("#game-div"),
             engine: engine,
-            // wireframes: false
-            hasBounds: true,
+            options: {
+                wireframes: false,
+                hasBounds: true
+            }
         });
 
         // run the renderer
@@ -54,7 +56,7 @@
     BB.timeForBallDrop = function(angleInRads) {
         var angleAbs = Math.abs(angleInRads);
         if (angleAbs > 0)
-            return ((1.5 / angleAbs) + 2 * angleAbs) * 150;
+            return ((1.5 / angleAbs) + 2 * angleAbs) * 175;
 
         return 0;
     }
@@ -213,7 +215,7 @@
 
         this.create = function() {
             this.body = [];
-            this.body.push(Bodies.rectangle(this.x, this.y, 1000, 20, { angle: this.angle, isStatic: true, friction: 0 }));
+            this.body.push(Bodies.rectangle(this.x, this.y, 1000, 20, { angle: this.angle, isStatic: true }));
             World.add(engine.world, this.body);
 
             this.closeGate();
@@ -343,8 +345,8 @@
         this.render = function(x, y) {
             this.x = x;
             this.y = y;
-            var inner = Bodies.circle(x, y, this.radius, { friction: 0, density: 1, isText: true, text: this.value});
-            var outter = Bodies.circle(x, y, this.radius, { friction: 0, density: 1});
+            var inner = Bodies.circle(x, y+5, this.radius/2, { density: 1, isText: true, text: this.value});
+            var outter = Bodies.circle(x, y, this.radius, { density: 1});
             this.body = Matter.Body.create({parts: [inner, outter], density: 1});
 
             World.add(engine.world, this.body);
