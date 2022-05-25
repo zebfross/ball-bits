@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "grunt": "^1.2.0",
+    "grunt": "^1.5.3",
     "matter-js": "^0.14.2",
     "pathseg": "^1.2.0",
     "pixi.js": "^5.3.0",
